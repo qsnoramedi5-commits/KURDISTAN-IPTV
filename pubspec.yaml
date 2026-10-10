@@ -1,0 +1,31 @@
+name: kurdistan_iptv
+description: "A new IPTV project for Kurdistan TV Channels."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # پاکێجەکانی فیدیۆ پلەیەر بۆ پەخشکردنی M3U8/HLS
+  video_player: ^2.8.2
+  chewie: ^1.7.5
+
+  # ئایکۆنەکانی کۆپێرتینۆ
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # ئەگەر ویستت وێنەی لوگۆ لە ناو ئاپەکەدا بەکاربهێنیت، ئەم بەشە چالاک بکە:
+  # assets:
+  #   - assets/logo.png
