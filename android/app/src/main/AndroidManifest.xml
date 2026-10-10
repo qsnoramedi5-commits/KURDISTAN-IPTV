@@ -1,29 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- أذونات الاتصال بالإنترنت لتشغيل البث المباشر -->
+    <!-- دەسەڵاتێن ئینتەرنێتێ بۆ پەخشان و لنکێن M3U8 -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:label="KURDISTAN IPTV"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true"> <!-- للسماح بروابط HTTP غير المشفرة -->
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            
-            <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -36,7 +29,6 @@
             android:value="2" />
     </application>
 
-    <!-- الأذونات المطلوبة للاستعلام عن التطبيقات الخارجية إن لزم الأمر -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
