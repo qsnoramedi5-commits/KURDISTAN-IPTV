@@ -1,5 +1,5 @@
 name: kurdistan_iptv
-description: "A modern IPTV app for Kurdistan Channels"
+description: A professional IPTV app for Kurdish channels.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,12 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   video_player: ^2.8.2
-  chewie: ^1.8.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+  chewie: ^1.7.5
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logo.png
