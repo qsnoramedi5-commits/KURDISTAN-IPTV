@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
-  // لیستی تەواوی کەناڵەکان کە تۆ ناردبووتن
+  // لیستی تەواوی کەناڵەکان
   final List<Channel> channels = const [
     Channel(name: "KU | RUDAW TV", url: "https://live.rudaw.net/hls/rudaw-tv/master.m3u8", category: "هەواڵ"),
     Channel(name: "KU | AVA MEDIA TV", url: "https://ava002.xyz/upload/images/1080.m3u8", category: "گشتی"),
@@ -247,18 +247,30 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF131B2E),
         title: Row(
           children: [
+            // Built-in Professional IPTV Logo/Icon Widget
             Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.blueAccent, Colors.cyanAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.cyanAccent, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.cyanAccent.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.tv, color: Colors.cyanAccent, size: 24),
+              child: const Icon(Icons.tv_rounded, color: Colors.white, size: 22),
             ),
             const SizedBox(width: 12),
             const Text(
               "KURDISTAN IPTV",
-              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2, color: Colors.white),
+              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2, color: Colors.white, fontSize: 18),
             ),
           ],
         ),
