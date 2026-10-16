@@ -17,12 +17,12 @@ class KurdistanIPTVApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0A0F1D),
+        scaffoldBackgroundColor: const Color(0xFF070B19),
         primaryColor: const Color(0xFF0066FF),
-        colorScheme: ColorScheme.dark(
-          primary: const Color(0xFF0066FF),
-          secondary: const Color(0xFF00D2FF),
-          surface: const Color(0xFF131B2E),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF0066FF),
+          secondary: Color(0xFF00D2FF),
+          surface: Color(0xFF131B2E),
         ),
         fontFamily: 'Roboto',
       ),
@@ -32,11 +32,7 @@ class KurdistanIPTVApp extends StatelessWidget {
 }
 
 class Channel {
-  const Channel({
-    required this.name,
-    required this.url,
-  });
-
+  const Channel({required this.name, required this.url});
   final String name;
   final String url;
 }
@@ -49,7 +45,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // هەمی 177 کەنالێن تە ب لێنکێن وان ڤە
+  // هەمی 177 کەنالێن تە ب لێنکێن وان ڕەسەن
   final List<Channel> channels = const [
     Channel(name: 'KU | RUDAW TV', url: 'https://live.rudaw.net/hls/rudaw-tv/master.m3u8'),
     Channel(name: 'KU | AVA MEDIA TV', url: 'https://ava002.xyz/upload/images/1080.m3u8'),
@@ -239,70 +235,103 @@ class _HomeScreenState extends State<HomeScreen> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: const Color(0xFF131B2E),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0066FF), Color(0xFF00D2FF)],
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.tv, color: Colors.white, size: 22),
-            ),
-            const SizedBox(width: 12),
-            const Text(
-              'KURDISTAN IPTV (177)',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-          ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF070B19), Color(0xFF0F172A), Color(0xFF1E1B4B)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          // خانەیا گەڕانێ ب شێوازەکێ دروست و ڕاست (Padding درست)
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'لێرەگەڕان بکە بۆ کەنالان...',
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF00D2FF)),
-                filled: true,
-                fillColor: const Color(0xFF131B2E),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+        child: SafeArea(
+          child: Column(
+            children: [
+              // مۆدێرن ئەپ بار (Modern Header)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF0066FF), Color(0xFF00D2FF)],
+                        ),
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF00D2FF).withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.tv_rounded, color: Colors.white, size: 26),
+                    ),
+                    const SizedBox(width: 14),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'KURDISTAN IPTV',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 1.2,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '${filteredChannels.length} کەنال بەردەستن',
+                          style: TextStyle(color: Colors.blueAccent.shade100, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
-          // لیستا کەنالان بە شێوازێ Grid گونجای بۆ موبایل و تیڤی
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.of(context).size.width > 900 ? 5 : (MediaQuery.of(context).size.width > 600 ? 3 : 2),
-                childAspectRatio: 1.6,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
+              // گەڕانێکی جوان و شووشەیی (Glassmorphism Search Bar)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  ),
+                  child: TextField(
+                    onChanged: (value) => setState(() => searchQuery = value),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      hintText: 'گەڕان بەدوای کەناڵەکاندا...',
+                      hintStyle: TextStyle(color: Colors.white54),
+                      prefixIcon: Icon(Icons.search_rounded, color: Color(0xFF00D2FF)),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
+                  ),
+                ),
               ),
-              itemCount: filteredChannels.length,
-              itemBuilder: (context, index) {
-                final channel = filteredChannels[index];
-                return ChannelCard(channel: channel);
-              },
-            ),
+              const SizedBox(height: 10),
+              // لیستا کەنالان ب شێوازەکێ نایاب (Grid)
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: MediaQuery.of(context).size.width > 900 ? 5 : (MediaQuery.of(context).size.width > 600 ? 3 : 2),
+                    childAspectRatio: 1.5,
+                    crossAxisSpacing: 14,
+                    mainAxisSpacing: 14,
+                  ),
+                  itemCount: filteredChannels.length,
+                  itemBuilder: (context, index) {
+                    return ChannelCard(channel: filteredChannels[index]);
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -322,11 +351,7 @@ class _ChannelCardState extends State<ChannelCard> {
   @override
   Widget build(BuildContext context) {
     return FocusableActionDetector(
-      onFocusChange: (focused) {
-        setState(() {
-          isFocused = focused;
-        });
-      },
+      onFocusChange: (focused) => setState(() => isFocused = focused),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -339,29 +364,40 @@ class _ChannelCardState extends State<ChannelCard> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
-            color: const Color(0xFF131B2E),
-            borderRadius: BorderRadius.circular(14),
+            gradient: LinearGradient(
+              colors: isFocused
+                  ? [const Color(0xFF0066FF), const Color(0xFF00D2FF)]
+                  : [const Color(0xFF131B2E).withOpacity(0.9), const Color(0xFF1E293B).withOpacity(0.9)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: isFocused ? const Color(0xFF00D2FF) : Colors.transparent,
-              width: 3,
+              color: isFocused ? Colors.white : Colors.white.withOpacity(0.08),
+              width: isFocused ? 2 : 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: isFocused
-                    ? const Color(0xFF00D2FF).withOpacity(0.4)
-                    : Colors.black.withOpacity(0.3),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
+                color: isFocused ? const Color(0xFF00D2FF).withOpacity(0.6) : Colors.black.withOpacity(0.4),
+                blurRadius: isFocused ? 12 : 6,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.play_circle_fill_rounded, size: 40, color: Color(0xFF00D2FF)),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.play_arrow_rounded, size: 30, color: Color(0xFF00D2FF)),
+              ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   widget.channel.name,
                   textAlign: TextAlign.center,
@@ -393,6 +429,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   late VideoPlayerController videoPlayerController;
   ChewieController? chewieController;
+  bool hasError = false;
 
   @override
   void initState() {
@@ -401,24 +438,38 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future<void> initializePlayer() async {
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
-    await videoPlayerController.initialize();
-    
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      autoPlay: true,
-      looping: false,
-      aspectRatio: 16 / 9,
-      errorBuilder: (context, errorMessage) {
-        return const Center(
-          child: Text(
-            'ببورە، پەخشکرنا ڤی کەنالی ناهێتە کرن / Stream Error',
-            style: TextStyle(color: Colors.white),
-          ),
-        );
-      },
-    );
-    setState(() {});
+    try {
+      videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
+      await videoPlayerController.initialize();
+      
+      chewieController = ChewieController(
+        videoPlayerController: videoPlayerController,
+        autoPlay: true,
+        looping: false,
+        aspectRatio: 16 / 9,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                const SizedBox(height: 10),
+                const Text(
+                  'ببورە، پەخشی ئەم کەناڵە لەبەردەستدا نییە یان کێشەی هەیە',
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      setState(() {});
+    } catch (e) {
+      setState(() {
+        hasError = true;
+      });
+    }
   }
 
   @override
@@ -434,13 +485,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(widget.channel.name),
+        elevation: 0,
+        title: Text(widget.channel.name, style: const TextStyle(fontSize: 16)),
       ),
       body: Center(
-        child: chewieController != null &&
-                chewieController!.videoPlayerController.value.isInitialized
-            ? Chewie(controller: chewieController!)
-            : const CircularProgressIndicator(color: Color(0xFF00D2FF)),
+        child: hasError
+            ? const Text('کێشەیەک ڕویدا لە پەخشکردندا', style: TextStyle(color: Colors.white))
+            : chewieController != null && chewieController!.videoPlayerController.value.isInitialized
+                ? Chewie(controller: chewieController!)
+                : const CircularProgressIndicator(color: Color(0xFF00D2FF)),
       ),
     );
   }
