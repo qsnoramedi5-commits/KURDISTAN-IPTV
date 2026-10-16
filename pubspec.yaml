@@ -1,7 +1,6 @@
 name: kurdistan_iptv
-description: "A new Flutter project for Kurdistan IPTV."
+description: A modern IPTV app for Mobile and Android TV built in Flutter.
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,9 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.6
-  video_player: 2.8.2
-  chewie: 1.7.5
+  video_player: ^2.8.2
+  chewie: ^1.8.1
 
 dev_dependencies:
   flutter_test:
