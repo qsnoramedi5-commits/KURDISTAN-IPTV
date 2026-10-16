@@ -24,12 +24,12 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.kurdistan_iptv"
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.example.kurdistan_iptv"
         minSdk 21
-        targetSdk 34
+        targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
