@@ -264,10 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // سەرۆک بۆ گەڕان د ناڤ کەنالان دا
+          // خانەیا گەڕانێ ب شێوازەکێ دروست و ڕاست (Padding درست)
           Padding(
             padding: const EdgeInsets.all(12.0),
-            TextField(
+            child: TextField(
               onChanged: (value) {
                 setState(() {
                   searchQuery = value;
