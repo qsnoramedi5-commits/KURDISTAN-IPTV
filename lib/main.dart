@@ -24,40 +24,47 @@ class KurdistanIPTVApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.blueAccent,
-        scaffoldBackgroundColor: const Color(0xFF0A0F1D),
-        colorScheme: ColorScheme.dark(
-          primary: Colors.blueAccent,
-          secondary: Colors.cyanAccent,
-          surface: const Color(0xFF131B2E),
+        scaffoldBackgroundColor: const Color(0xFF090D16),
+        primaryColor: const Color(0xFF00D2FF),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF00D2FF),
+          secondary: Color(0xFF0084FF),
+          surface: Color(0xFF111827),
         ),
-        fontFamily: 'Roboto',
       ),
-      home: const HomeScreen(),
+      home: const MainHomeScreen(),
     );
   }
 }
 
 class Channel {
-  const Channel({required this.name, required this.url, required this.category});
   final String name;
   final String url;
   final String category;
+  bool isFavorite;
+
+  Channel({
+    required this.name,
+    required this.url,
+    required this.category,
+    this.isFavorite = false,
+  });
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MainHomeScreen extends StatefulWidget {
+  const MainHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainHomeScreen> createState() => _MainHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainHomeScreenState extends State<MainHomeScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
-  // لیستی تەواوی کەناڵەکان
-  final List<Channel> channels = const [
+  // لیستی تەواوی ١١٠+ کەناڵەکەت بە بێ هیچ کەم و کوڕیەک
+  final List<Channel> _allChannels = [
     Channel(name: "KU | RUDAW TV", url: "https://live.rudaw.net/hls/rudaw-tv/master.m3u8", category: "هەواڵ"),
     Channel(name: "KU | AVA MEDIA TV", url: "https://ava002.xyz/upload/images/1080.m3u8", category: "گشتی"),
     Channel(name: "KU | KURDISTAN 24 TV", url: "https://hlspackager.akamaized.net/live/DB/K24/HLS/K24.m3u8", category: "هەواڵ"),
@@ -237,161 +244,321 @@ class _HomeScreenState extends State<HomeScreen> {
     Channel(name: "KU | MINARA TV HD", url: "http://m3u.drm-26.com:80/live/Mkdtv1_061261/4STJysUc/129888.m3u8", category: "گشتی"),
   ];
 
+  final List<String> _categories = ["هەموو", "دڵخوازەکان", "هەواڵ", "گشتی", "وەرزش", "فیلم", "منداڵان", "ئایینی"];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _categories.length, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final filteredChannels = channels.where((ch) => ch.name.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
-
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: const Color(0xFF131B2E),
-        title: Row(
+      body: SafeArea(
+        child: Column(
           children: [
-            // Built-in Professional IPTV Logo/Icon Widget
             Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Colors.blueAccent, Colors.cyanAccent],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                shape: BoxShape.circle,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              decoration: const BoxDecoration(
+                color: Color(0xFF0F172A),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
                 boxShadow: [
-                  BoxShadow(
-                    color: Colors.cyanAccent.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                  BoxShadow(color: Colors.black45, blurRadius: 10, offset: Offset(0, 4)),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF00D2FF), Color(0xFF0084FF)],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.live_tv_rounded, color: Colors.white, size: 26),
+                          ),
+                          const SizedBox(width: 12),
+                          ShaderMask(
+                            shaderCallback: (bounds) => const LinearGradient(
+                              colors: [Color(0xFF00D2FF), Color(0xFF0084FF)],
+                            ).createShader(bounds),
+                            child: const Text(
+                              "KURDISTAN IPTV",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.redAccent, width: 1),
+                        ),
+                        child: const Row(
+                          children: [
+                            CircleAvatar(radius: 4, backgroundColor: Colors.redAccent),
+                            SizedBox(width: 6),
+                            Text("LIVE", style: TextStyle(color: Colors.redAccent, fontSize: 11, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _searchController,
+                    onChanged: (val) => setState(() => _searchQuery = val),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: "گەڕان بەدوای کەناڵدا...",
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      prefixIcon: const Icon(Icons.search, color: Color(0xFF00D2FF)),
+                      filled: true,
+                      fillColor: const Color(0xFF1E293B),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              child: const Icon(Icons.tv_rounded, color: Colors.white, size: 22),
             ),
-            const SizedBox(width: 12),
-            const Text(
-              "KURDISTAN IPTV",
-              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2, color: Colors.white, fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (val) => setState(() => _searchQuery = val),
-              decoration: InputDecoration(
-                hintText: "گەڕان بەدوای کەناڵدا...",
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: const Icon(Icons.search, color: Colors.blueAccent),
-                filled: true,
-                fillColor: const Color(0xFF1B263B),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none,
-                ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              height: 45,
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                indicatorColor: Colors.transparent,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 6),
+                onTap: (index) => setState(() {}),
+                tabs: _categories.map((cat) {
+                  final isSelected = _categories[_tabController.index] == cat;
+                  return Tab(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: isSelected
+                            ? const LinearGradient(colors: [Color(0xFF00D2FF), Color(0xFF0084FF)])
+                            : null,
+                        color: isSelected ? null : const Color(0xFF1E293B),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: isSelected
+                            ? [BoxShadow(color: const Color(0xFF00D2FF).withOpacity(0.4), blurRadius: 8)]
+                            : [],
+                      ),
+                      child: Text(
+                        cat,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.grey,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: filteredChannels.length,
-              itemBuilder: (context, index) {
-                final channel = filteredChannels[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF162035),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.blueAccent.withOpacity(0.2),
-                      child: const Icon(Icons.play_arrow, color: Colors.cyanAccent),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  final currentCat = _categories[_tabController.index];
+                  var filteredList = _allChannels.where((ch) {
+                    final matchesSearch = ch.name.toLowerCase().contains(_searchQuery.toLowerCase());
+                    if (currentCat == "هەموو") return matchesSearch;
+                    if (currentCat == "دڵخوازەکان") return matchesSearch && ch.isFavorite;
+                    return matchesSearch && ch.category == currentCat;
+                  }).toList();
+
+                  if (filteredList.isEmpty) {
+                    return const Center(
+                      child: Text("هیچ کەناڵێک نەدۆزرایەوە!", style: TextStyle(color: Colors.grey)),
+                    );
+                  }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                     ),
-                    title: Text(
-                      channel.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      "جۆری کەناڵ: ${channel.category}",
-                      style: TextStyle(color: Colors.grey[400], fontSize: 12),
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.blueAccent),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlayerScreen(channel: channel),
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) {
+                      final channel = filteredList[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UltraPlayerScreen(channel: channel),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: Colors.white.withOpacity(0.05)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF00D2FF).withOpacity(0.15),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.play_arrow_rounded, color: Color(0xFF00D2FF), size: 24),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          channel.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          channel.category,
+                                          style: const TextStyle(color: Colors.grey, fontSize: 11),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: IconButton(
+                                  icon: Icon(
+                                    channel.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                    color: channel.isFavorite ? Colors.redAccent : Colors.grey,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      channel.isFavorite = !channel.isFavorite;
+                                    });
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class PlayerScreen extends StatefulWidget {
-  const PlayerScreen({super.key, required this.channel});
+class UltraPlayerScreen extends StatefulWidget {
   final Channel channel;
+  const UltraPlayerScreen({super.key, required this.channel});
 
   @override
-  State<PlayerScreen> createState() => _PlayerScreenState();
+  State<UltraPlayerScreen> createState() => _UltraPlayerScreenState();
 }
 
-class _PlayerScreenState extends State<PlayerScreen> {
+class _UltraPlayerScreenState extends State<UltraPlayerScreen> {
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    _initializePlayer();
+    _startStream();
   }
 
-  Future<void> _initializePlayer() async {
+  Future<void> _startStream() async {
     try {
-      _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
+      _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.channel.url),
+        httpHeaders: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': '*/*',
+        },
+      );
+
       await _videoPlayerController.initialize();
-      
+
       _chewieController = ChewieController(
         videoPlayerController: _videoPlayerController,
         autoPlay: true,
         looping: true,
+        isLive: true,
         aspectRatio: _videoPlayerController.value.aspectRatio,
         allowFullScreen: true,
-        deviceOrientationsAfterFullScreen: [
-          DeviceOrientation.portraitUp,
-          DeviceOrientation.portraitDown,
-        ],
-        placeholder: const Center(child: CircularProgressIndicator(color: Colors.cyanAccent)),
-        materialProgressColors: ChewieProgressColors(
-          playedColor: Colors.blueAccent,
-          handleColor: Colors.cyanAccent,
-          backgroundColor: Colors.grey,
-        ),
+        fullScreenByDefault: false,
+        errorBuilder: (context, errorMessage) {
+          return const Center(
+            child: Text(
+              "سێرڤەری کەناڵەکە لە کارکەوتووە یان ڕاگیراوە!",
+              style: TextStyle(color: Colors.redAccent, fontSize: 14),
+            ),
+          );
+        },
       );
-      setState(() => _isLoading = false);
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
     }
   }
 
@@ -399,23 +566,30 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void dispose() {
     _videoPlayerController.dispose();
     _chewieController?.dispose();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(widget.channel.name),
-        backgroundColor: const Color(0xFF131B2E),
+        backgroundColor: const Color(0xFF0F172A),
+        title: Text(widget.channel.name, style: const TextStyle(fontSize: 16)),
       ),
       body: Center(
         child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.cyanAccent)
-            : _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
-                ? Chewie(controller: _chewieController!)
-                : const Text("هەڵە لە پەخشکردنی کەناڵدا هەیە!", style: TextStyle(color: Colors.redAccent)),
+            ? const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Color(0xFF00D2FF)),
+                  SizedBox(height: 15),
+                  Text("پەیوەندی بە سێرڤەرەوە دەکرێت...", style: TextStyle(color: Colors.grey)),
+                ],
+              )
+            : _hasError
+                ? const Text("کێشەیەک لە پەخشکردندا ڕوویدا!", style: TextStyle(color: Colors.redAccent))
+                : Chewie(controller: _chewieController!),
       ),
     );
   }
