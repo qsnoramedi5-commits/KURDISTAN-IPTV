@@ -45,7 +45,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // هەمی 177 کەنالێن تە ب لێنکێن وان ڕەسەن
   final List<Channel> channels = const [
     Channel(name: 'KU | RUDAW TV', url: 'https://live.rudaw.net/hls/rudaw-tv/master.m3u8'),
     Channel(name: 'KU | AVA MEDIA TV', url: 'https://ava002.xyz/upload/images/1080.m3u8'),
@@ -246,7 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // مۆدێرن ئەپ بار (Modern Header)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -290,7 +288,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              // گەڕانێکی جوان و شووشەیی (Glassmorphism Search Bar)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                 child: Container(
@@ -313,7 +310,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              // لیستا کەنالان ب شێوازەکێ نایاب (Grid)
               Expanded(
                 child: GridView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -448,13 +444,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
         looping: false,
         aspectRatio: 16 / 9,
         errorBuilder: (context, errorMessage) {
-          return Center(
+          return const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
-                const SizedBox(height: 10),
-                const Text(
+                Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                SizedBox(height: 10),
+                Text(
                   'ببورە، پەخشی ئەم کەناڵە لەبەردەستدا نییە یان کێشەی هەیە',
                   style: TextStyle(color: Colors.white70),
                   textAlign: TextAlign.center,
