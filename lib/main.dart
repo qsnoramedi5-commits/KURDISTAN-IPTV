@@ -23,43 +23,46 @@ class KurdistanIPTVApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.blue,
-        scaffoldBackgroundColor: const Color(0xFF0B132B),
-        colorScheme: ColorScheme.fromSwatch(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.blue,
-        ).copyWith(secondary: const Color(0xFF1C2541)),
+        scaffoldBackgroundColor: const Color(0xFF0D1117),
+        primaryColor: const Color(0xFF1F6FEB),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF1F6FEB),
+          secondary: Color(0xFF238636),
+          surface: Color(0xFF161B22),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF161B22),
+          elevation: 0,
+        ),
       ),
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }
 
 class Channel {
+  final String name;
+  final String url;
+  final String category;
+
   const Channel({
     required this.name,
     required this.url,
     required this.category,
   });
-
-  final String name;
-  final String url;
-  final String category;
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-  String _selectedLanguage = 'سۆرانی / بادینی';
-  String _searchQuery = '';
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+  String _selectedLanguage = 'کوردی بادینی';
 
-  // هەموو کەناڵەکانت لێرەدا بە تەواوی دانراون
   final List<Channel> _channels = const [
     Channel(name: 'KU | RUDAW TV', url: 'https://live.rudaw.net/hls/rudaw-tv/master.m3u8', category: 'هەواڵ'),
     Channel(name: 'KU | AVA MEDIA TV', url: 'https://ava002.xyz/upload/images/1080.m3u8', category: 'هەواڵ'),
@@ -99,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Channel(name: 'KU | MIX TV HD', url: 'http://avrstream.com:1935/live/Mix-kurdy/playlist.m3u8', category: 'گشتی'),
     Channel(name: 'KU | NAQSHI MEDIA TV', url: 'http://naqshi-media.com:1935/live/NaqshiMedia/playlist.m3u8', category: 'گشتی'),
     Channel(name: 'KU | REHBER TV HD', url: 'https://cdn4.yayin.com.tr/rehbertv/tracks-v1a1/mono.m3u8', category: 'ئایینی'),
-    Channel(name: 'KU | SORAN ENTERTAIMENT TV', url: 'http://avrstream.com:1935/live/SoranEntertainment/playlist.m3u8', category: 'سەگرمە'),
+    Channel(name: 'KU | SORAN ENTERTAIMENT TV', url: 'http://avrstream.com:1935/live/SoranEntertainment/playlist.m3u8', category: 'یاری'),
     Channel(name: 'KU | BAHA TV HD', url: 'http://baskhd.ddns.net:40/live/baskhd/yusfstore.m3u8', category: 'گشتی'),
     Channel(name: 'KU | SADA TV HD', url: 'http://sada-hd.ddns.net:40/live/sadatv/index.m3u8', category: 'گشتی'),
     Channel(name: 'KU | BARIN MOVIES TV', url: 'https://cdn.karwan.tv/barin-movies/index.m3u8', category: 'فیلم'),
@@ -179,9 +182,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Channel(name: 'KU | ATV HD', url: 'https://b.livev.xyz/aytv/tracks-v1a1/mono.m3u8', category: 'تورکی'),
     Channel(name: 'KU | SHOW TV HD', url: 'https://b.livev.xyz/kanald/tracks-v1a1/mono.m3u8', category: 'تورکی'),
     Channel(name: 'KU | SUNNAH DENG', url: 'https://live20.bozztv.com/akamaissh101/ssh101/oneplussunnattv/chunks.m3u8', category: 'ئایینی'),
-    Channel(name: 'KU | BINER TV HD', url: 'https://live20.bozztv.com/giatv/giatv-Shawkat/Biner_HD/chunks.m3u8', category: 'سەگرمە'),
+    Channel(name: 'KU | BINER TV HD', url: 'https://live20.bozztv.com/giatv/giatv-Shawkat/Biner_HD/chunks.m3u8', category: 'یاری'),
     Channel(name: 'KU | ALHADATH TV', url: 'https://live.alarabiya.net/alarabiapublish/alhadath.smil/alarabiapublish/alhadath_1080p/chunks.m3u8', category: 'هەواڵ'),
-    Channel(name: 'KU | MRBEAN TV HD', url: 'https://amg00627-amg00627c31-rakuten-fr-3991.playouts.now.amagi.tv/playlist/amg00627-banijayfast-mrbeanfrcc-rakutenfr/playlist.m3u8', category: 'سەگرمە'),
+    Channel(name: 'KU | MRBEAN TV HD', url: 'https://amg00627-amg00627c31-rakuten-fr-3991.playouts.now.amagi.tv/playlist/amg00627-banijayfast-mrbeanfrcc-rakutenfr/playlist.m3u8', category: 'یاری'),
     Channel(name: 'KU | IRAQ 24 TV HD', url: 'https://ghaasiflu.online/Iraq24/tracks-v1a1/mono.m3u8', category: 'هەواڵ'),
     Channel(name: 'KU | ZNAR KIDS TV', url: 'https://live20.bozztv.com/giatv/giatv-znarkids/znarkids/chunks.m3u8', category: 'منداڵان'),
     Channel(name: 'KU | UFC TV HD', url: 'https://linear-893.frequency.stream/dist/xumo/893/hls/master/playlist.m3u8', category: 'وەرزش'),
@@ -242,219 +245,424 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredChannels = _channels.where((c) {
-      return c.name.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
-
-    final List<Widget> pages = [
-      _buildHomeTab(filteredChannels),
-      _buildChannelsTab(filteredChannels),
-      _buildSettingsTab(),
+    final List<Widget> screens = [
+      HomeScreen(channels: _channels),
+      LanguageScreen(
+        selectedLanguage: _selectedLanguage,
+        onLanguageChanged: (lang) {
+          setState(() {
+            _selectedLanguage = lang;
+          });
+        },
+      ),
+      const SettingsScreen(),
     ];
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 16,
         title: Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.blueAccent, width: 2),
-                image: const DecorationImage(
-                  image: NetworkImage('https://i.ibb.co/39697/logo.png'),
-                  fit: BoxFit.cover,
-                ),
+                border: Border.all(color: const Color(0xFF1F6FEB), width: 2),
+              ),
+              child: const CircleAvatar(
+                radius: 16,
+                backgroundImage: NetworkImage('https://cdn.phototourl.com/member/2026-10-17-e44f4819-8d35-4b2b-b202-73dde24d11d4.png'),
               ),
             ),
-            const SizedBox(width: 10),
-            const Text('KURDISTAN IPTV', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const SizedBox(width: 12),
+            const Text(
+              'KURDISTAN IPTV',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                letterSpacing: 1.1,
+              ),
+            ),
           ],
         ),
       ),
-      body: pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFF1C2541),
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'سەرەکی'),
-          BottomNavigationBarItem(icon: Icon(Icons.tv), label: 'کەناڵەکان'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'رێکخستن'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHomeTab(List<Channel> channels) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 160,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              image: const DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1000&auto=format&fit=crop'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [Colors.black.withOpacity(0.8), Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                ),
-              ),
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.bottomLeft,
-              child: const Text(
-                'KURDISTAN IPTV - هەموو کەناڵەکان',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text('کەناڵە بەردەستەکان', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: channels.length,
-            itemBuilder: (context, index) {
-              final channel = channels[index];
-              return Card(
-                color: const Color(0xFF1C2541),
-                child: ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.blueAccent,
-                    child: Icon(Icons.play_arrow, color: Colors.white),
-                  ),
-                  title: Text(channel.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('جۆر: ${channel.category}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlayerScreen(channel: channel),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChannelsTab(List<Channel> channels) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: channels.length,
-      itemBuilder: (context, index) {
-        final channel = channels[index];
-        return Card(
-          color: const Color(0xFF1C2541),
-          child: ListTile(
-            leading: const Icon(Icons.tv, color: Colors.blueAccent),
-            title: Text(channel.name),
-            subtitle: Text(channel.category),
-            trailing: const Icon(Icons.play_circle_filled, color: Colors.red, size: 32),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PlayerScreen(channel: channel),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSettingsTab() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        ListTile(
-          leading: Icon(Icons.language),
-          title: Text('زمان / Language'),
-          subtitle: Text('بادینی، سۆرانی، کورمانجی، عەرەبی، ئینگلیزی'),
+      body: screens[_currentIndex],
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: Color(0xFF30363D), width: 0.5)),
         ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.info),
-          title: Text('دەربارەی ئەپی / About'),
-          subtitle: Text('KURDISTAN IPTV v1.0.0'),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          backgroundColor: const Color(0xFF161B22),
+          selectedItemColor: const Color(0xFF1F6FEB),
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'سەرەکی'),
+            BottomNavigationBarItem(icon: Icon(Icons.language_rounded), label: 'زمان'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings_rounded), label: 'ڕێکخستن'),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class PlayerScreen extends StatefulWidget {
-  final Channel channel;
-  const PlayerScreen({Key? key, required this.channel}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  final List<Channel> channels;
+  const HomeScreen({Key? key, required this.channels}) : super(key: key);
 
   @override
-  State<PlayerScreen> createState() => _PlayerScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _PlayerScreenState extends State<PlayerScreen> {
-  late VideoPlayerController _controller;
-  bool _isInitialized = false;
+class _HomeScreenState extends State<HomeScreen> {
+  Channel? _currentChannel;
+  VideoPlayerController? _videoController;
+  bool _isMuted = false;
+  bool _isFullScreen = false;
+  String _quality = 'HD 1080p';
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.channel.url))
+    if (widget.channels.isNotEmpty) {
+      _playChannel(widget.channels.first);
+    }
+  }
+
+  void _playChannel(Channel channel) {
+    setState(() {
+      _currentChannel = channel;
+    });
+
+    _videoController?.dispose();
+    _videoController = VideoPlayerController.networkUrl(Uri.parse(channel.url))
       ..initialize().then((_) {
-        setState(() {
-          _isInitialized = true;
-          _controller.play();
-        });
-      }).catchError((error) {
-        debugPrint("Error initializing video: $error");
+        setState(() {});
+        _videoController?.play();
+      }).catchError((e) {
+        debugPrint('Video player error: $e');
       });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoController?.dispose();
     super.dispose();
+  }
+
+  void _toggleMute() {
+    setState(() {
+      _isMuted = !_isMuted;
+      _videoController?.setVolume(_isMuted ? 0 : 1);
+    });
+  }
+
+  void _toggleOrientation() {
+    setState(() {
+      _isFullScreen = !_isFullScreen;
+      if (_isFullScreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.channel.name),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                'https://cdn.phototourl.com/member/2026-10-17-e44f4819-8d35-4b2b-b202-73dde24d11d4.png',
+                width: double.infinity,
+                height: 170,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF161B22),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF30363D)),
+              ),
+              child: Column(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _videoController != null && _videoController!.value.isInitialized
+                            ? ClipRRect(
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                                child: VideoPlayer(_videoController!),
+                              )
+                            : const CircularProgressIndicator(color: Color(0xFF1F6FEB)),
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.circle, color: Colors.white, size: 8),
+                                SizedBox(width: 4),
+                                Text(
+                                  'LIVE',
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _currentChannel?.name ?? '',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(_isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded, color: Colors.blueAccent),
+                          onPressed: _toggleMute,
+                        ),
+                        PopupMenuButton<String>(
+                          initialValue: _quality,
+                          icon: const Icon(Icons.high_quality_rounded, color: Colors.greenAccent),
+                          onSelected: (val) {
+                            setState(() {
+                              _quality = val;
+                            });
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(value: 'HD 1080p', child: Text('HD 1080p')),
+                            const PopupMenuItem(value: 'SD 720p', child: Text('SD 720p')),
+                            const PopupMenuItem(value: 'Low 480p', child: Text('Auto Quality')),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(_isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen, color: Colors.amberAccent),
+                          onPressed: _toggleOrientation,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              'هەموو کەناڵەکان',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: widget.channels.length,
+            itemBuilder: (context, index) {
+              final channel = widget.channels[index];
+              final isSelected = _currentChannel?.name == channel.name;
+
+              return Card(
+                color: isSelected ? const Color(0xFF1F6FEB).withOpacity(0.2) : const Color(0xFF161B22),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: isSelected ? const Color(0xFF1F6FEB) : const Color(0xFF30363D),
+                  ),
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: isSelected ? const Color(0xFF1F6FEB) : Colors.grey[800],
+                    child: Icon(
+                      isSelected ? Icons.play_arrow_rounded : Icons.tv_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(
+                    channel.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? const Color(0xFF58A6FF) : Colors.white,
+                    ),
+                  ),
+                  subtitle: Text(channel.category, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+                  onTap: () => _playChannel(channel),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
-      body: Center(
-        child: _isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-            : const CircularProgressIndicator(color: Colors.blueAccent),
-      ),
+    );
+  }
+}
+
+class LanguageScreen extends StatelessWidget {
+  final String selectedLanguage;
+  final Function(String) onLanguageChanged;
+
+  const LanguageScreen({
+    Key? key,
+    required this.selectedLanguage,
+    required this.onLanguageChanged,
+  }) : super(key: key);
+
+  final List<String> _languages = const [
+    'کوردی بادینی',
+    'کوردی سورانی',
+    'کوردی کورمانجی',
+    'عربی',
+    'English',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _languages.length,
+      itemBuilder: (context, index) {
+        final lang = _languages[index];
+        final isSelected = lang == selectedLanguage;
+
+        return Card(
+          color: const Color(0xFF161B22),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: isSelected ? const Color(0xFF1F6FEB) : const Color(0xFF30363D)),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          child: ListTile(
+            leading: const Icon(Icons.translate_rounded, color: Color(0xFF1F6FEB)),
+            title: Text(
+              lang,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isSelected ? const Color(0xFF58A6FF) : Colors.white,
+              ),
+            ),
+            trailing: isSelected
+                ? const Icon(Icons.check_circle_rounded, color: Color(0xFF1F6FEB))
+                : const Icon(Icons.circle_outlined, color: Colors.grey),
+            onTap: () => onLanguageChanged(lang),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF161B22),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFF30363D)),
+          ),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  'https://cdn.phototourl.com/member/2026-10-17-1a07053b-4f20-48db-a6f8-6ba7fb5deded.png',
+                  width: 90,
+                  height: 60,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'KURDISTAN IPTV',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'وەشان: 1.0.0 (Version 1.0.0)',
+                style: TextStyle(color: Colors.grey, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF161B22),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFF30363D)),
+          ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: Color(0xFF1F6FEB)),
+                  SizedBox(width: 8),
+                  Text(
+                    'About Us / دەربارەی مە',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+              Divider(height: 24, color: Color(0xFF30363D)),
+              Text(
+                'ئەپلیكەیشنا KURDISTAN IPTV سەکۆیەکا تایبەتمەند و پرۆفێشناڵە بۆ پەخشکرنا ڕاستەوخۆیا هەموو کەناڵێن کوردی و جیهانی ب کوالێتییەکا زۆر بەرز. ئارمانجا مە ئەوە کو نۆژەنترین تەکنەلۆژیا و خێراترین پەخش بگەهینینە بکارهێنەران ل سەرانسەری جیهانێ.',
+                style: TextStyle(color: Colors.grey, height: 1.6, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
