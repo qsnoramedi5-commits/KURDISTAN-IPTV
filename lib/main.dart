@@ -61,7 +61,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  String _selectedLanguage = 'کوردی بادینی';
 
   final List<Channel> _channels = const [
     Channel(name: 'KU | RUDAW TV', url: 'https://live.rudaw.net/hls/rudaw-tv/master.m3u8', category: 'هەواڵ'),
@@ -247,14 +246,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeScreen(channels: _channels),
-      LanguageScreen(
-        selectedLanguage: _selectedLanguage,
-        onLanguageChanged: (lang) {
-          setState(() {
-            _selectedLanguage = lang;
-          });
-        },
-      ),
       const SettingsScreen(),
     ];
 
@@ -304,7 +295,6 @@ class _MainScreenState extends State<MainScreen> {
           },
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'سەرەکی'),
-            BottomNavigationBarItem(icon: Icon(Icons.language_rounded), label: 'زمان'),
             BottomNavigationBarItem(icon: Icon(Icons.settings_rounded), label: 'ڕێکخستن'),
           ],
         ),
@@ -325,7 +315,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Channel? _currentChannel;
   VideoPlayerController? _videoController;
   bool _isMuted = false;
-  bool _isFullScreen = false;
   String _quality = 'HD 1080p';
 
   @override
@@ -364,20 +353,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _toggleOrientation() {
-    setState(() {
-      _isFullScreen = !_isFullScreen;
-      if (_isFullScreen) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ]);
-      } else {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-        ]);
-      }
-    });
+  void _openFullScreen() {
+    if (_videoController != null && _currentChannel != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FullScreenVideoPlayer(
+            controller: _videoController!,
+            channelName: _currentChannel!.name,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -411,57 +398,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   AspectRatio(
                     aspectRatio: 16 / 9,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        _videoController != null && _videoController!.value.isInitialized
-                            ? ClipRRect(
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                                child: VideoPlayer(_videoController!),
-                              )
-                            : const CircularProgressIndicator(color: Color(0xFF1F6FEB)),
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Row(
-                              children: [
-                                Icon(Icons.circle, color: Colors.white, size: 8),
-                                SizedBox(width: 4),
-                                Text(
-                                  'LIVE',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: _videoController != null && _videoController!.value.isInitialized
+                        ? ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            child: VideoPlayer(_videoController!),
+                          )
+                        : const Center(child: CircularProgressIndicator(color: Color(0xFF1F6FEB))),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Row(
                       children: [
+                        // 1. ناوی کەناڵ
                         Expanded(
                           child: Text(
                             _currentChannel?.name ?? '',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        // 2. نیشانەی LIVE لای ناوی کەناڵ
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.circle, color: Colors.white, size: 6),
+                              SizedBox(width: 4),
+                              Text(
+                                'LIVE',
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // 3. کۆنترۆڵەکان
                         IconButton(
                           icon: Icon(_isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded, color: Colors.blueAccent),
                           onPressed: _toggleMute,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(8),
                         ),
                         PopupMenuButton<String>(
                           initialValue: _quality,
                           icon: const Icon(Icons.high_quality_rounded, color: Colors.greenAccent),
+                          padding: EdgeInsets.zero,
                           onSelected: (val) {
                             setState(() {
                               _quality = val;
@@ -473,9 +459,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             const PopupMenuItem(value: 'Low 480p', child: Text('Auto Quality')),
                           ],
                         ),
+                        // 4. دوگمەی Fullscreen (کە شاشە بە تەواوی لاندسکێپ دەکات)
                         IconButton(
-                          icon: Icon(_isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen, color: Colors.amberAccent),
-                          onPressed: _toggleOrientation,
+                          icon: const Icon(Icons.fullscreen, color: Colors.amberAccent),
+                          onPressed: _openFullScreen,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(8),
                         ),
                       ],
                     ),
@@ -540,60 +529,77 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class LanguageScreen extends StatelessWidget {
-  final String selectedLanguage;
-  final Function(String) onLanguageChanged;
+// ---------------------- پەڕەی FULL SCREEN ----------------------
+class FullScreenVideoPlayer extends StatefulWidget {
+  final VideoPlayerController controller;
+  final String channelName;
 
-  const LanguageScreen({
+  const FullScreenVideoPlayer({
     Key? key,
-    required this.selectedLanguage,
-    required this.onLanguageChanged,
+    required this.controller,
+    required this.channelName,
   }) : super(key: key);
 
-  final List<String> _languages = const [
-    'کوردی بادینی',
-    'کوردی سورانی',
-    'کوردی کورمانجی',
-    'عربی',
-    'English',
-  ];
+  @override
+  State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
+}
+
+class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _languages.length,
-      itemBuilder: (context, index) {
-        final lang = _languages[index];
-        final isSelected = lang == selectedLanguage;
-
-        return Card(
-          color: const Color(0xFF161B22),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: isSelected ? const Color(0xFF1F6FEB) : const Color(0xFF30363D)),
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          child: ListTile(
-            leading: const Icon(Icons.translate_rounded, color: Color(0xFF1F6FEB)),
-            title: Text(
-              lang,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isSelected ? const Color(0xFF58A6FF) : Colors.white,
-              ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio: widget.controller.value.aspectRatio,
+              child: VideoPlayer(widget.controller),
             ),
-            trailing: isSelected
-                ? const Icon(Icons.check_circle_rounded, color: Color(0xFF1F6FEB))
-                : const Icon(Icons.circle_outlined, color: Colors.grey),
-            onTap: () => onLanguageChanged(lang),
           ),
-        );
-      },
+          Positioned(
+            top: 20,
+            left: 20,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  widget.channelName,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+// ---------------------- بەشێ ڕێکخستن (SETTINGS SCREEN) ----------------------
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
