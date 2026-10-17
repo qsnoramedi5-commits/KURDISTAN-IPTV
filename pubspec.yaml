@@ -1,5 +1,5 @@
 name: kurdistan_iptv
-description: "KURDISTAN IPTV App for Live Channels"
+description: "KURDISTAN IPTV App"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -19,5 +19,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/
