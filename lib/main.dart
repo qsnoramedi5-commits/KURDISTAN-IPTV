@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // دەستپێکردنی media_kit
+  MediaKit.ensureInitialized();
   runApp(const KurdistanIPTVApp());
 }
 
@@ -16,7 +19,6 @@ class KurdistanIPTVApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.amber,
         scaffoldBackgroundColor: const Color(0xFF121212),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF1F1F1F),
@@ -28,7 +30,6 @@ class KurdistanIPTVApp extends StatelessWidget {
   }
 }
 
-// مۆدێلی کەناڵەکان
 class ChannelModel {
   final String name;
   final String url;
@@ -45,7 +46,7 @@ class MainHomeScreen extends StatefulWidget {
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
-  // لیستی تەواوی کەناڵەکان بە بێ کەمکردنەوەی هیچ کەناڵێک (بەبێ فیلم و زنجیرە)
+  // لیستی تەواوی کەناڵەکان بێ کەمکردنەوە
   final List<ChannelModel> channels = [
     ChannelModel(name: 'KU | RUDAW TV', url: 'https://live.rudaw.net/hls/rudaw-tv/master.m3u8', category: 'News'),
     ChannelModel(name: 'KU | AVA MEDIA TV', url: 'https://ava002.xyz/upload/images/1080.m3u8', category: 'General'),
@@ -214,51 +215,43 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kurdistan IPTV (Live TV)', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Kurdistan IPTV', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: channels.length,
-          itemBuilder: (context, index) {
-            final channel = channels[index];
-            return Card(
-              color: const Color(0xFF1E1E1E),
-              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.amber.shade800,
-                  child: const Icon(Icons.tv, color: Colors.white),
-                ),
-                title: Text(
-                  channel.name,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text('بەش: ${channel.category}', style: TextStyle(color: Colors.grey.shade400)),
-                trailing: const Icon(Icons.play_circle_fill, color: Colors.amber, size: 36),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlayerScreen(channel: channel),
-                    ),
-                  );
-                },
+      body: ListView.builder(
+        itemCount: channels.length,
+        itemBuilder: (context, index) {
+          final channel = channels[index];
+          return Card(
+            color: const Color(0xFF1E1E1E),
+            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.amber.shade800,
+                child: const Icon(Icons.tv, color: Colors.white),
               ),
-            );
-          },
-        ),
+              title: Text(channel.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              subtitle: Text('بەش: ${channel.category}', style: TextStyle(color: Colors.grey.shade400)),
+              trailing: const Icon(Icons.play_circle_fill, color: Colors.amber, size: 36),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayerScreen(channel: channel),
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-// پەڕەی پلەیەر بۆ لێدانی کەناڵەکان بە شێوازێکی بەهێز
 class PlayerScreen extends StatefulWidget {
   final ChannelModel channel;
-
   const PlayerScreen({super.key, required this.channel});
 
   @override
@@ -266,74 +259,27 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  late VideoPlayerController _videoPlayerController;
-  ChewieController? _chewieController;
-  bool _isLoading = true;
-  String? _errorMessage;
+  late final Player _player = Player();
+  late final VideoController _controller = VideoController(_player);
 
   @override
   void initState() {
     super.initState();
-    initializePlayer();
-  }
-
-  Future<void> initializePlayer() async {
-    try {
-      _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
-      await _videoPlayerController.initialize();
-      
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController,
-        autoPlay: true,
-        looping: true,
-        aspectRatio: 16 / 9,
-        errorBuilder: (context, errorMessage) {
-          return Center(
-            child: Text(
-              'هەڵە لە کردنەوەی کەناڵ: $errorMessage',
-              style: const TextStyle(color: Colors.white),
-            ),
-          );
-        },
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.toString();
-      });
-    }
+    _player.open(Media(widget.channel.url));
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController?.dispose();
+    _player.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.channel.name),
-      ),
+      appBar: AppBar(title: Text(widget.channel.name)),
       body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator(color: Colors.amber)
-            : _errorMessage != null
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'نەتوانرا پەیوەندی بە کەناڵەوە بکرێت. تکایە پشکنی بۆ هێڵی ئینتەرنێت یان لینکی کەناڵ بکە.\n\n$_errorMessage',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  )
-                : Chewie(controller: _chewieController!),
+        child: Video(controller: _controller),
       ),
     );
   }
