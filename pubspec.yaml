@@ -11,14 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # پلەیەری بەهێز بۆ لێدانی کەناڵەکان و ڤیدیۆ
-  video_player: ^2.8.2
-  chewie: ^1.7.5
+  # پکیجە سەرەکییەکانی media_kit بۆ لێدانی هەموو کەناڵێک بە بێ کێشە
+  media_kit: ^1.1.10
+  media_kit_video: ^1.2.4
+  media_kit_safe_uri: ^0.1.2
   
-  # پکیجی هێنانی وێنە بە ئۆنلاین (بۆ لۆگۆ یان نیشانەی کەناڵەکان ئەگەر پێویست بکات)
   cached_network_image: ^3.3.1
-  
-  # پکیجە بنەڕەتییەکانی آیکۆن و هتد
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
@@ -28,7 +26,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # لێرەدا دەتوانیت فۆنت یان وێنەکانت زیاد بکەیت ئەگەر هەبن
-  # assets:
-  #   - assets/images/
