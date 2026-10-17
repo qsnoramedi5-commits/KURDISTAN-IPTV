@@ -374,12 +374,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // وێنەی بەنەرێ سەرەکی بە لینکە نوێکە
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
-                'https://cdn.phototourl.com/member/2026-10-17-e44f4819-8d35-4b2b-b202-73dde24d11d4.png',
+                'https://cdn.phototourl.com/member/2026-10-17-7af79973-7dd1-402d-b028-4e4120d0bb34.png',
                 width: double.infinity,
                 height: 170,
                 fit: BoxFit.cover,
@@ -409,7 +410,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Row(
                       children: [
-                        // 1. ناوی کەناڵ
                         Expanded(
                           child: Text(
                             _currentChannel?.name ?? '',
@@ -417,7 +417,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        // 2. نیشانەی LIVE لای ناوی کەناڵ
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
@@ -437,7 +436,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        // 3. کۆنترۆڵەکان
                         IconButton(
                           icon: Icon(_isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded, color: Colors.blueAccent),
                           onPressed: _toggleMute,
@@ -459,7 +457,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             const PopupMenuItem(value: 'Low 480p', child: Text('Auto Quality')),
                           ],
                         ),
-                        // 4. دوگمەی Fullscreen (کە شاشە بە تەواوی لاندسکێپ دەکات)
                         IconButton(
                           icon: const Icon(Icons.fullscreen, color: Colors.amberAccent),
                           onPressed: _openFullScreen,
@@ -529,7 +526,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// ---------------------- پەڕەی FULL SCREEN ----------------------
 class FullScreenVideoPlayer extends StatefulWidget {
   final VideoPlayerController controller;
   final String channelName;
@@ -599,7 +595,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 }
 
-// ---------------------- بەشێ ڕێکخستن (SETTINGS SCREEN) ----------------------
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
