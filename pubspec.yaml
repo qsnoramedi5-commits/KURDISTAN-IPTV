@@ -1,16 +1,34 @@
 name: kurdistan_iptv
-description: KURDISTAN IPTV live TV app
-publish_to: "none"
+description: "An IPTV application for Kurdish and international live channels."
+publish_to: 'none'
+
 version: 1.0.0+1
+
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: '>=3.0.0 <4.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^2.9.2
+  
+  # پلەیەری بەهێز بۆ لێدانی کەناڵەکان و ڤیدیۆ
+  video_player: ^2.8.2
+  chewie: ^1.7.5
+  
+  # پکیجی هێنانی وێنە بە ئۆنلاین (بۆ لۆگۆ یان نیشانەی کەناڵەکان ئەگەر پێویست بکات)
+  cached_network_image: ^3.3.1
+  
+  # پکیجە بنەڕەتییەکانی آیکۆن و هتد
+  cupertino_icons: ^1.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^3.0.0
+
 flutter:
   uses-material-design: true
+
+  # لێرەدا دەتوانیت فۆنت یان وێنەکانت زیاد بکەیت ئەگەر هەبن
+  # assets:
+  #   - assets/images/
